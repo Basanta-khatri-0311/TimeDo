@@ -1,53 +1,59 @@
 import { useState, useEffect } from "react";
 import { useToDo } from "../context/ToDoContext";
 
-const AddTask = ({ editingTask, stopEditing }) => {
+const AddTask = ({
+  selectedDate,
+  addTask: addTaskProp,
+  editingTask,
+  updateTask,
+  cancelEdit,
+}) => {
+  const { addTask: addTaskContext } = useToDo();
+  const addTask = addTaskProp || addTaskContext;
+
   const [title, setTitle] = useState("");
   const [targetMinutes, setTargetMinutes] = useState("");
-
-  const { addTask, updateTask } = useToDo();
-
-  // When editingTask changes, populate form fields
   useEffect(() => {
     if (editingTask) {
       setTitle(editingTask.title);
-      setTargetMinutes(editingTask.targetMinutes.toString());
+      setTargetMinutes(editingTask.targetMinutes);
+      setCategory(editingTask.category);
     } else {
       setTitle("");
       setTargetMinutes("");
     }
-  }, [editingTask]);
+  }, [editingTask, selectedDate]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (!title || !targetMinutes)
-      return alert("Please fill both title and target minutes");
+    if (!title || !targetMinutes || !category) {
+      return alert("Please fill in title and target minutes.");
+    }
 
     if (editingTask) {
       updateTask({
         ...editingTask,
         title,
         targetMinutes: parseInt(targetMinutes),
+        category,
       });
-      stopEditing(); // close editing mode
+      cancelEdit();
     } else {
-      // Add new task
       const newTask = {
         id: crypto.randomUUID(),
         title,
         targetMinutes: parseInt(targetMinutes),
-        startTime: null,
-        endTime: null,
         elapsed: 0,
         isRunning: false,
         completed: false,
         createdAt: new Date().toISOString(),
+        date: selectedDate || new Date().toLocaleDateString("en-CA"),
+        category,
       };
       addTask(newTask);
-      setTitle("");
-      setTargetMinutes("");
     }
+    setTitle("");
+    setTargetMinutes("");
   };
 
   return (
@@ -64,21 +70,27 @@ const AddTask = ({ editingTask, stopEditing }) => {
       />
       <input
         type="number"
+        style={{
+          MozAppearance: "textfield",
+          WebkitAppearance: "none",
+          margin: 0,
+          
+        }}
         placeholder="Target (min)"
         value={targetMinutes}
         onChange={(e) => setTargetMinutes(e.target.value)}
-        className="px-4 py-2 border rounded-md  w-3/4 sm:w-1/3"
+        className="px-4 py-2 border rounded-md w-3/4 sm:w-1/3"
       />
       <button
         type="submit"
-        className="bg-blue-600 text-white px-4 py-2 rounded-md  w-3/4 sm:w-1/4"
+        className="bg-blue-600 text-white px-4 py-2 rounded-md w-3/4 sm:w-1/4"
       >
         {editingTask ? "Update" : "Add"}
       </button>
       {editingTask && (
         <button
           type="button"
-          onClick={stopEditing}
+          onClick={cancelEdit}
           className="bg-gray-600 text-white px-4 py-2 rounded-md w-3/4 sm:w-1/4"
         >
           Cancel
