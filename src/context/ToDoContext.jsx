@@ -1,10 +1,17 @@
-import { useContext, createContext, useState } from "react";
+import { useContext, createContext, useState, useEffect } from "react";
 
 const ToDoContext = createContext();
 
 //provider
 const TodoContextProvider = ({ children }) => {
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState(() => {
+    const saved = localStorage.getItem("timedo-tasks");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("timedo-tasks", JSON.stringify(tasks));
+  }, [tasks]);
 
   const addTask = (task) => {
     setTasks((prev) => [...prev, task]);
@@ -21,7 +28,7 @@ const TodoContextProvider = ({ children }) => {
   };
 
   return (
-    <ToDoContext.Provider value={{ tasks, addTask, updateTask , deleteTask }}>
+    <ToDoContext.Provider value={{ tasks, addTask, updateTask, deleteTask }}>
       {children}
     </ToDoContext.Provider>
   );
