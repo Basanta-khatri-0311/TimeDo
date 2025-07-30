@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { StartButton, PauseButton, EndButton } from "./Button";
 
 const ToDoCard = ({ task }) => {
   const [elapsed, setElapsed] = useState(task.elapsed || 0);
@@ -15,6 +16,7 @@ const ToDoCard = ({ task }) => {
     } else {
       clearInterval(intervalId);
     }
+
     return () => clearInterval(id);
   }, [isRunning]);
 
@@ -50,40 +52,21 @@ const ToDoCard = ({ task }) => {
         </p>
         <p className="text-sm mt-1">
           Target:{" "}
-          <span className="font-medium text-white">
-            {task.targetMinutes} min
-          </span>
+          <span className="font-medium text-white">{task.targetMinutes} min</span>
         </p>
         <p className="text-sm">
           Elapsed:{" "}
-          <span className="font-medium text-green-400">
-            {formatTime(elapsed)}
-          </span>
+          <span className="font-medium text-green-400">{formatTime(elapsed)}</span>
         </p>
       </div>
 
       <div className="flex gap-3">
         {!isRunning ? (
-          <button
-            onClick={handleStart}
-            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
-          >
-            Start
-          </button>
+          <StartButton onClick={handleStart} />
         ) : (
-          <button
-            onClick={handlePause}
-            className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm font-medium"
-          >
-            Pause
-          </button>
+          <PauseButton onClick={handlePause} />
         )}
-        <button
-          onClick={handleEnd}
-          className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
-        >
-          End
-        </button>
+        <EndButton onClick={handleEnd} />
       </div>
     </li>
   );
