@@ -1,35 +1,58 @@
-import { useState } from "react";
-import { useToDo,  } from "../context/ToDoContext";
+import { useState, useEffect } from "react";
+import { useToDo } from "../context/ToDoContext";
 
-const AddTask = () => {
+const AddTask = ({ editingTask, stopEditing }) => {
   const [title, setTitle] = useState("");
   const [targetMinutes, setTargetMinutes] = useState("");
 
-  const { addTask } = useToDo();
+  const { addTask, updateTask } = useToDo();
 
-  const handelSubmit = (e) => {
+  // When editingTask changes, populate form fields
+  useEffect(() => {
+    if (editingTask) {
+      setTitle(editingTask.title);
+      setTargetMinutes(editingTask.targetMinutes.toString());
+    } else {
+      setTitle("");
+      setTargetMinutes("");
+    }
+  }, [editingTask]);
+
+  const handleSubmit = (e) => {
     e.preventDefault();
+
     if (!title || !targetMinutes)
       return alert("Please fill both title and target minutes");
 
-    const newTask = {
-      id: crypto.randomUUID(),
-      title,
-      targetMinutes: parseInt(targetMinutes),
-      startTime: null,
-      endTime: null,
-      elapsed: 0,
-      isRunning: false,
-      completed: false,
-      createdAt: new Date().toISOString(),
-    };
-    addTask(newTask);
-    setTitle("");
-    setTargetMinutes("");
+    if (editingTask) {
+      updateTask({
+        ...editingTask,
+        title,
+        targetMinutes: parseInt(targetMinutes),
+      });
+      stopEditing(); // close editing mode
+    } else {
+      // Add new task
+      const newTask = {
+        id: crypto.randomUUID(),
+        title,
+        targetMinutes: parseInt(targetMinutes),
+        startTime: null,
+        endTime: null,
+        elapsed: 0,
+        isRunning: false,
+        completed: false,
+        createdAt: new Date().toISOString(),
+      };
+      addTask(newTask);
+      setTitle("");
+      setTargetMinutes("");
+    }
   };
+
   return (
     <form
-      onSubmit={handelSubmit}
+      onSubmit={handleSubmit}
       className="flex flex-col sm:flex-row gap-4 sm:gap-10 md:gap-12 items-center mb-6 sm:p-4"
     >
       <input
@@ -50,8 +73,17 @@ const AddTask = () => {
         type="submit"
         className="bg-blue-600 text-white px-4 py-2 rounded-md  w-3/4 sm:w-1/4"
       >
-        Add
+        {editingTask ? "Update" : "Add"}
       </button>
+      {editingTask && (
+        <button
+          type="button"
+          onClick={stopEditing}
+          className="bg-gray-600 text-white px-4 py-2 rounded-md w-3/4 sm:w-1/4"
+        >
+          Cancel
+        </button>
+      )}
     </form>
   );
 };

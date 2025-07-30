@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import AddTask from "../components/AddTask";
 import ToDoCard from "../components/ToDoCard";
 import { useToDo } from "../context/ToDoContext";
 
 const Home = () => {
-  const { tasks } = useToDo();
+  const { tasks, updateTask, deleteTask } = useToDo();
+  const [editingTask, setEditingTask] = useState(null);
+
+  const startEditing = (task) => setEditingTask(task);
+  const stopEditing = () => setEditingTask(null);
 
   return (
     <main className="min-h-screen bg-zinc-900 px-4 py-8 sm:px-6 lg:px-8 text-white">
@@ -16,9 +20,9 @@ const Home = () => {
           <p className="text-zinc-400">Plan your day and track your focus</p>
         </header>
 
-        {/* Add Task Form */}
+        {/* Add or Edit Task Form */}
         <section className="bg-zinc-800 rounded-lg p-6 mb-10 shadow-lg">
-          <AddTask />
+          <AddTask editingTask={editingTask} stopEditing={stopEditing} />
         </section>
 
         {/* Task List */}
@@ -26,7 +30,13 @@ const Home = () => {
           {tasks.length > 0 ? (
             <ul className="space-y-5">
               {tasks.map((task) => (
-                <ToDoCard key={task.id} task={task} />
+                <ToDoCard
+                  key={task.id}
+                  task={task}
+                  updateTask={updateTask}
+                  deleteTask={deleteTask}
+                  onEdit={() => startEditing(task)} 
+                />
               ))}
             </ul>
           ) : (
