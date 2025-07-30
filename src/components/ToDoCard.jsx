@@ -73,8 +73,8 @@ const ToDoCard = ({ task, updateTask, deleteTask, onEdit }) => {
       .padStart(2, "0");
 
     return hours === "00"
-      ? `${minutes}:${seconds}:${milliseconds}`
-      : `${hours}:${minutes}:${seconds}:${milliseconds}`;
+    ? `${minutes}:${seconds}:${milliseconds}`
+    : `${hours}:${minutes}:${seconds}`;
   };
 
   const formatDate = (iso) => {
