@@ -1,12 +1,12 @@
-import React from 'react'
-import AddTask from './components/AddTask'
+import React from "react";
+import Home from "./pages/Home";
 
 const App = () => {
   return (
     <>
-    <AddTask/>
+      <Home />
     </>
-  )
-}
+  );
+};
 
-export default App
+export default App;
