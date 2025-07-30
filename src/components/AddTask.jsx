@@ -17,7 +17,6 @@ const AddTask = ({
     if (editingTask) {
       setTitle(editingTask.title);
       setTargetMinutes(editingTask.targetMinutes);
-      setCategory(editingTask.category);
     } else {
       setTitle("");
       setTargetMinutes("");
@@ -26,7 +25,7 @@ const AddTask = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!title || !targetMinutes || !category) {
+    if (!title || !targetMinutes) {
       return alert("Please fill in title and target minutes.");
     }
 
@@ -35,7 +34,6 @@ const AddTask = ({
         ...editingTask,
         title,
         targetMinutes: parseInt(targetMinutes),
-        category,
       });
       cancelEdit();
     } else {
@@ -48,7 +46,6 @@ const AddTask = ({
         completed: false,
         createdAt: new Date().toISOString(),
         date: selectedDate || new Date().toLocaleDateString("en-CA"),
-        category,
       };
       addTask(newTask);
     }

@@ -23,6 +23,12 @@ const ToDoCard = ({ task, updateTask, deleteTask, onEdit }) => {
           setElapsed(task.targetMinutes * 60 * 1000); // clamp to max
           setIsRunning(false); // stop timer
           clearInterval(id);
+          updateTask({
+            ...task,
+            elapsed: targetMs,
+            completed: true,
+            isRunning: false,
+          });
         } else {
           setElapsed(nowElapsed);
         }
@@ -45,7 +51,7 @@ const ToDoCard = ({ task, updateTask, deleteTask, onEdit }) => {
   const handleEnd = () => {
     setIsRunning(false);
     setElapsed(0);
-    updateTask({ ...task, elapsed: 0 });
+    updateTask({ ...task, elapsed: targetMs, completed: true, isRunning: false });
   };
 
   const handleDelete = () => {
@@ -85,7 +91,9 @@ const ToDoCard = ({ task, updateTask, deleteTask, onEdit }) => {
       <div className="flex-1 w-full">
         {/* Title and Elapsed Time */}
         <div className="mb-4">
-          <h2 className="text-4xl mb-3 font-semibold text-white">{task.title}</h2>
+          <h2 className="text-4xl mb-3 font-semibold text-white">
+            {task.title}
+          </h2>
           <p>
             Elapsed:{" "}
             <span
