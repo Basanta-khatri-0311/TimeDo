@@ -1,97 +1,22 @@
-import { useState, useEffect } from "react";
 import { StartButton, PauseButton, EndButton } from "./Button";
+import { formatTime, formatDate } from "../utils/formateDateTime";
+import { useTaskTimer } from "../hooks/useTaskTimer";
 
 const ToDoCard = ({ task, updateTask, deleteTask, onEdit }) => {
-  const [elapsed, setElapsed] = useState(task.elapsed || 0);
-  const [isRunning, setIsRunning] = useState(false);
-  const [intervalId, setIntervalId] = useState(null);
+  const {
+    elapsed,
+    isRunning,
+    handleStart,
+    handlePause,
+    handleEnd,
+    targetMs,
+  } = useTaskTimer(task, updateTask);
 
-  const targetMs = task.targetMinutes * 60 * 1000;
   const progress = elapsed / targetMs;
   const isAlmostDone = progress >= 0.9;
 
-  useEffect(() => {
-    let id;
-    if (isRunning) {
-      const start = Date.now() - elapsed;
-
-      id = setInterval(() => {
-        const nowElapsed = Date.now() - start;
-
-        // Check if the elapsed time reached target
-        if (nowElapsed >= task.targetMinutes * 60 * 1000) {
-          setElapsed(task.targetMinutes * 60 * 1000); // clamp to max
-          setIsRunning(false); // stop timer
-          clearInterval(id);
-          updateTask({
-            ...task,
-            elapsed: targetMs,
-            completed: true,
-            isRunning: false,
-            maxCompletedTargetMinutes: Math.max(task.maxCompletedTargetMinutes || 0, task.targetMinutes),
-          });
-        } else {
-          setElapsed(nowElapsed);
-        }
-      }, 100);
-
-      setIntervalId(id);
-    } else {
-      clearInterval(intervalId);
-    }
-
-    return () => clearInterval(id);
-  }, [isRunning]);
-
-  useEffect(() => {
-    setElapsed(task.elapsed || 0);
-  }, [task.elapsed]);
-
-  const handleStart = () => setIsRunning(true);
-  const handlePause = () => {
-    setIsRunning(false);
-    updateTask({ ...task, elapsed });
-  };
-  const handleEnd = () => {
-    setIsRunning(false);
-    setElapsed(0);
-    updateTask({
-      ...task,
-      elapsed: targetMs,
-      completed: true,
-      isRunning: false,
-    });
-  };
-
   const handleDelete = () => {
     deleteTask(task.id);
-  };
-
-  const formatTime = (ms) => {
-    const hours = Math.floor(ms / 3600000)
-      .toString()
-      .padStart(2, "0");
-    const minutes = Math.floor((ms % 3600000) / 60000)
-      .toString()
-      .padStart(2, "0");
-    const seconds = Math.floor((ms % 60000) / 1000)
-      .toString()
-      .padStart(2, "0");
-    const milliseconds = Math.floor((ms % 1000) / 10)
-      .toString()
-      .padStart(2, "0");
-
-    return hours === "00"
-      ? `${minutes}:${seconds}:${milliseconds}`
-      : `${hours}:${minutes}:${seconds}`;
-  };
-
-  const formatDate = (iso) => {
-    const date = new Date(iso);
-    return date.toLocaleString(undefined, {
-      dateStyle: "medium",
-      timeStyle: "short",
-    });
   };
 
   return (
@@ -146,9 +71,9 @@ const ToDoCard = ({ task, updateTask, deleteTask, onEdit }) => {
       {/* Right Section: Timer Buttons */}
       <div className="flex gap-3 items-center justify-end flex-wrap">
         {!isRunning ? (
-          <StartButton onClick={handleStart} completed = {task.completed}  />
+          <StartButton onClick={handleStart} completed={task.completed} />
         ) : (
-          <PauseButton onClick={handlePause} completed = {task.completed} />
+          <PauseButton onClick={handlePause} completed={task.completed} />
         )}
         <EndButton onClick={handleEnd} />
       </div>
