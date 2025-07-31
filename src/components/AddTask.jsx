@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { useToDo } from "../context/ToDoContext";
+import { useAddTaskForm } from "../hooks/useAddTaskForm";
 
 const AddTask = ({
   selectedDate,
@@ -8,66 +7,19 @@ const AddTask = ({
   updateTask,
   cancelEdit,
 }) => {
-  const { addTask: addTaskContext } = useToDo();
-  const addTask = addTaskProp || addTaskContext;
-
-  const [title, setTitle] = useState("");
-  const [targetMinutes, setTargetMinutes] = useState("");
-  useEffect(() => {
-    if (editingTask) {
-      setTitle(editingTask.title);
-      setTargetMinutes(editingTask.targetMinutes);
-    } else {
-      setTitle("");
-      setTargetMinutes("");
-    }
-  }, [editingTask, selectedDate]);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!title || !targetMinutes) {
-      return alert("Please fill in title and target minutes.");
-    }
-    if (editingTask) {
-      const newTarget = parseInt(targetMinutes);
-      const oldTarget = editingTask.targetMinutes;
-      const maxCompletedTarget =
-        editingTask.maxCompletedTargetMinutes || oldTarget;
-
-      // Always prevent reducing below max ever completed
-      if (maxCompletedTarget > 0 && newTarget < maxCompletedTarget) {
-        alert(
-          `You cannot set the target below the maximum completed target (${maxCompletedTarget} min).`
-        );
-        return;
-      }
-
-      const newTargetMs = newTarget * 60 * 1000;
-      const isNowCompleted = editingTask.elapsed >= newTargetMs;
-      updateTask({
-        ...editingTask,
-        title,
-        targetMinutes: newTarget,
-        completed: isNowCompleted,
-      });
-      cancelEdit();
-    } else {
-      const newTask = {
-        id: crypto.randomUUID(),
-        title,
-        targetMinutes: parseInt(targetMinutes),
-        elapsed: 0,
-        isRunning: false,
-        completed: false,
-        createdAt: new Date().toISOString(),
-        date: selectedDate || new Date().toLocaleDateString("en-CA"),
-        maxCompletedTargetMinutes: 0,
-      };
-      addTask(newTask);
-    }
-    setTitle("");
-    setTargetMinutes("");
-  };
+  const {
+    title,
+    setTitle,
+    targetMinutes,
+    setTargetMinutes,
+    handleSubmit,
+  } = useAddTaskForm({
+    selectedDate,
+    addTaskProp,
+    editingTask,
+    updateTask,
+    cancelEdit,
+  });
 
   return (
     <form
@@ -83,15 +35,13 @@ const AddTask = ({
       />
       <input
         type="number"
-        style={{
-          MozAppearance: "textfield",
-          WebkitAppearance: "none",
-          margin: 0,
-        }}
         placeholder="Target (min)"
         value={targetMinutes}
         onChange={(e) => setTargetMinutes(e.target.value)}
         className="px-4 py-2 border rounded-md w-3/4 sm:w-1/3"
+        min={1}
+        inputMode="numeric"
+        pattern="[0-9]*"
       />
       <button
         type="submit"
