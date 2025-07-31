@@ -1,6 +1,6 @@
 import { useAddTaskForm } from "../hooks/useAddTaskForm";
 
-const AddTask = ({
+export const AddTask = ({
   selectedDate,
   addTask: addTaskProp,
   editingTask,
@@ -62,4 +62,3 @@ const AddTask = ({
   );
 };
 
-export default AddTask;

@@ -1,6 +1,4 @@
-import React from "react";
-
-const CompleteStatus = ({ completedCount, totalCount }) => {
+export const CompleteStatus = ({ completedCount, totalCount }) => {
   return (
     <div className="mb-4 text-zinc-300">
       Completed: {completedCount} / {totalCount}
@@ -8,4 +6,3 @@ const CompleteStatus = ({ completedCount, totalCount }) => {
   );
 };
 
-export default CompleteStatus;

@@ -85,7 +85,7 @@ const calendarStyles = `
   }
 `;
 
-const CalendarComponent = ({ selectedDate, onDateSelect, tasks }) => {
+export const CalendarComponent = ({ selectedDate, onDateSelect, tasks }) => {
   const tileContent = ({ date, view }) => {
     if (view === "month") {
       const dateStr = date.toLocaleDateString("en-CA");
@@ -106,5 +106,3 @@ const CalendarComponent = ({ selectedDate, onDateSelect, tasks }) => {
     </>
   );
 };
-
-export default CalendarComponent;
