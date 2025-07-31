@@ -1,8 +1,8 @@
 import React from "react";
 import { useToDo } from "../context/ToDoContext";
-import ToDoCard from "../components/ToDoCard";
+import {ToDoCard} from "../components/ToDoCard";
 
-const TaskList = ({handleDelete, filteredTasks, editTask}) => {
+export const TaskList = ({handleDelete, filteredTasks, editTask}) => {
     const { updateTask  } = useToDo()
     
   return (
@@ -28,4 +28,3 @@ const TaskList = ({handleDelete, filteredTasks, editTask}) => {
   );
 };
 
-export default TaskList;

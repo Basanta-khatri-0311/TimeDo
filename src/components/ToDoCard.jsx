@@ -2,7 +2,7 @@ import { StartButton, PauseButton, EndButton } from "./Button";
 import { formatTime, formatDate } from "../utils/formateDateTime";
 import { useTaskTimer } from "../hooks/useTaskTimer";
 
-const ToDoCard = ({ task, updateTask, deleteTask, onEdit }) => {
+export const ToDoCard = ({ task, updateTask, deleteTask, onEdit }) => {
   const {
     elapsed,
     isRunning,
@@ -80,5 +80,3 @@ const ToDoCard = ({ task, updateTask, deleteTask, onEdit }) => {
     </li>
   );
 };
-
-export default ToDoCard;
