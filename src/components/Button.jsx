@@ -1,7 +1,8 @@
 import PropTypes from "prop-types";
 
-export const StartButton = ({ onClick }) => (
+export const StartButton = ({ onClick, completed }) => (
   <button
+    disabled={completed}
     onClick={onClick}
     className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
   >
@@ -9,8 +10,9 @@ export const StartButton = ({ onClick }) => (
   </button>
 );
 
-export const PauseButton = ({ onClick }) => (
+export const PauseButton = ({ onClick, completed }) => (
   <button
+    disabled={completed}
     onClick={onClick}
     className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm font-medium"
   >
@@ -27,6 +29,9 @@ export const EndButton = ({ onClick }) => (
   </button>
 );
 
-StartButton.propTypes = PauseButton.propTypes = EndButton.propTypes = {
-  onClick: PropTypes.func.isRequired,
-};
+StartButton.propTypes =
+  PauseButton.propTypes =
+  EndButton.propTypes =
+    {
+      onClick: PropTypes.func.isRequired,
+    };

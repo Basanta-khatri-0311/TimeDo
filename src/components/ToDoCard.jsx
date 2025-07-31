@@ -146,9 +146,9 @@ const ToDoCard = ({ task, updateTask, deleteTask, onEdit }) => {
       {/* Right Section: Timer Buttons */}
       <div className="flex gap-3 items-center justify-end flex-wrap">
         {!isRunning ? (
-          <StartButton onClick={handleStart} />
+          <StartButton onClick={handleStart} completed = {task.completed}  />
         ) : (
-          <PauseButton onClick={handlePause} />
+          <PauseButton onClick={handlePause} completed = {task.completed} />
         )}
         <EndButton onClick={handleEnd} />
       </div>
