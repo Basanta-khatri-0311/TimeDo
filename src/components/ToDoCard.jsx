@@ -28,6 +28,7 @@ const ToDoCard = ({ task, updateTask, deleteTask, onEdit }) => {
             elapsed: targetMs,
             completed: true,
             isRunning: false,
+            maxCompletedTargetMinutes: Math.max(task.maxCompletedTargetMinutes || 0, task.targetMinutes),
           });
         } else {
           setElapsed(nowElapsed);

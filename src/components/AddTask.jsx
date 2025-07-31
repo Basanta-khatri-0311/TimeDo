@@ -28,14 +28,26 @@ const AddTask = ({
     if (!title || !targetMinutes) {
       return alert("Please fill in title and target minutes.");
     }
-
     if (editingTask) {
-      const newTargetMs = parseInt(targetMinutes) * 60 * 1000;
+      const newTarget = parseInt(targetMinutes);
+      const oldTarget = editingTask.targetMinutes;
+      const maxCompletedTarget =
+        editingTask.maxCompletedTargetMinutes || oldTarget;
+
+      // Always prevent reducing below max ever completed
+      if (maxCompletedTarget > 0 && newTarget < maxCompletedTarget) {
+        alert(
+          `You cannot set the target below the maximum completed target (${maxCompletedTarget} min).`
+        );
+        return;
+      }
+
+      const newTargetMs = newTarget * 60 * 1000;
       const isNowCompleted = editingTask.elapsed >= newTargetMs;
       updateTask({
         ...editingTask,
         title,
-        targetMinutes: parseInt(targetMinutes),
+        targetMinutes: newTarget,
         completed: isNowCompleted,
       });
       cancelEdit();
@@ -49,6 +61,7 @@ const AddTask = ({
         completed: false,
         createdAt: new Date().toISOString(),
         date: selectedDate || new Date().toLocaleDateString("en-CA"),
+        maxCompletedTargetMinutes: 0,
       };
       addTask(newTask);
     }
