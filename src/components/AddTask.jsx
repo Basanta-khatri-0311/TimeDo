@@ -30,10 +30,13 @@ const AddTask = ({
     }
 
     if (editingTask) {
+      const newTargetMs = parseInt(targetMinutes) * 60 * 1000;
+      const isNowCompleted = editingTask.elapsed >= newTargetMs;
       updateTask({
         ...editingTask,
         title,
         targetMinutes: parseInt(targetMinutes),
+        completed: isNowCompleted,
       });
       cancelEdit();
     } else {
@@ -71,7 +74,6 @@ const AddTask = ({
           MozAppearance: "textfield",
           WebkitAppearance: "none",
           margin: 0,
-          
         }}
         placeholder="Target (min)"
         value={targetMinutes}

@@ -47,11 +47,19 @@ const ToDoCard = ({ task, updateTask, deleteTask, onEdit }) => {
   }, [task.elapsed]);
 
   const handleStart = () => setIsRunning(true);
-  const handlePause = () => setIsRunning(false);
+  const handlePause = () => {
+    setIsRunning(false);
+    updateTask({ ...task, elapsed });
+  };
   const handleEnd = () => {
     setIsRunning(false);
     setElapsed(0);
-    updateTask({ ...task, elapsed: targetMs, completed: true, isRunning: false });
+    updateTask({
+      ...task,
+      elapsed: targetMs,
+      completed: true,
+      isRunning: false,
+    });
   };
 
   const handleDelete = () => {
@@ -73,8 +81,8 @@ const ToDoCard = ({ task, updateTask, deleteTask, onEdit }) => {
       .padStart(2, "0");
 
     return hours === "00"
-    ? `${minutes}:${seconds}:${milliseconds}`
-    : `${hours}:${minutes}:${seconds}`;
+      ? `${minutes}:${seconds}:${milliseconds}`
+      : `${hours}:${minutes}:${seconds}`;
   };
 
   const formatDate = (iso) => {
