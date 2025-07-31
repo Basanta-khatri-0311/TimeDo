@@ -1,28 +1,29 @@
 import React, { useState } from "react";
-import AddTask from "../components/AddTask";
-
-import CalendarComponent from "../components/CalendarComponent";
+import {
+  AddTask,
+  CalendarComponent,
+  Header,
+  CompleteStatus,
+  TaskList,
+} from "../components";
 import { useToDo } from "../context/ToDoContext";
-import Header from "../components/Header";
-import CompleteStatus from "../components/CompleteStatus";
-import TaskList from "../components/TaskList";
+import { useTaskFilters } from "../hooks/useTaskFilters";
+import { getTaskStats } from "../utils/taskStats";
 
-const Home = () => {
+export const Home = () => {
   const { tasks, addTask, updateTask, deleteTask } = useToDo();
 
   const [selectedDate, setSelectedDate] = useState(null);
-
   const [editingTask, setEditingTask] = useState(null);
+
   const editTask = (task) => setEditingTask(task);
   const cancelEdit = () => setEditingTask(null);
 
-  const selectedDateStr = selectedDate
-    ? selectedDate.toLocaleDateString("en-CA")
-    : "";
+  // Use custom hook for filtering
+  const { selectedDateStr, filteredTasks } = useTaskFilters(tasks, selectedDate);
 
-  const filteredTasks = selectedDateStr
-    ? tasks.filter((task) => task.date === selectedDateStr)
-    : [];
+  // Use utility for stats
+  const { completedCount, totalCount } = getTaskStats(tasks);
 
   const handleDelete = (taskId) => {
     deleteTask(taskId);
@@ -35,9 +36,6 @@ const Home = () => {
     setSelectedDate(null);
     cancelEdit();
   };
-
-  const completedCount = tasks.filter((t) => t.completed).length;
-  const totalCount = tasks.length;
 
   return (
     <main className="min-h-screen bg-zinc-900 px-4 py-8 sm:px-6 lg:px-8 text-white">
@@ -66,7 +64,11 @@ const Home = () => {
                 cancelEdit={cancelEdit}
               />
             </section>
-            <TaskList handleDelete={handleDelete} filteredTasks={filteredTasks} editTask={editTask}/>
+            <TaskList
+              handleDelete={handleDelete}
+              filteredTasks={filteredTasks}
+              editTask={editTask}
+            />
           </>
         ) : (
           <>
@@ -92,4 +94,3 @@ const Home = () => {
   );
 };
 
-export default Home;
