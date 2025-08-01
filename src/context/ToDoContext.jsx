@@ -9,7 +9,8 @@ const TodoContextProvider = ({ children }) => {
     return saved ? JSON.parse(saved) : [];
   });
 
-  useEffect(() => {
+  useEffect(() => { 
+    
     localStorage.setItem("timedo-tasks", JSON.stringify(tasks));
   }, [tasks]);
 
