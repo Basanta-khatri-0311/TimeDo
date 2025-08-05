@@ -61,11 +61,10 @@ const calendarStyles = `
   }
 
   .react-calendar__tile--now {
-    background: #2563eb;
+    background: #a855f7;
     color: #fff;
   }
 
-  /* Remove red color for weekends */
   .react-calendar__tile--weekend {
     color: #d4d4d8;
   }
@@ -74,23 +73,25 @@ const calendarStyles = `
     color: #fff;
   }
 
-  .task-dot {
-    margin-top: 4px;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background-color: #3b82f6;
-    margin-left: auto;
-    margin-right: auto;
+  /* Highlight for days with tasks */
+  .highlight-with-task {
+    background-color: #3b82f6 !important;
+    color: white !important;
+    font-weight: 600;
+    border-radius: 0.5rem;
+  }
+
+  .highlight-with-task:hover {
+    background-color: #2563eb !important;
   }
 `;
 
 export const CalendarComponent = ({ selectedDate, onDateSelect, tasks }) => {
-  const tileContent = ({ date, view }) => {
+  const tileClassName = ({ date, view }) => {
     if (view === "month") {
       const dateStr = date.toLocaleDateString("en-CA");
       const hasTask = tasks.some((task) => task.date === dateStr);
-      return hasTask ? <div className="task-dot" /> : null;
+      return hasTask ? "highlight-with-task" : null;
     }
     return null;
   };
@@ -98,11 +99,13 @@ export const CalendarComponent = ({ selectedDate, onDateSelect, tasks }) => {
   return (
     <>
       <style>{calendarStyles}</style>
-      <Calendar
-        onChange={onDateSelect}
-        value={selectedDate}
-        tileContent={tileContent}
-      />
+      <div className="flex justify-center">
+        <Calendar
+          onChange={onDateSelect}
+          value={selectedDate}
+          tileClassName={tileClassName}
+        />
+      </div>
     </>
   );
 };
